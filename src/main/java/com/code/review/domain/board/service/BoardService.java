@@ -6,6 +6,10 @@ import com.code.review.domain.board.dto.BoardResponseDto;
 import com.code.review.domain.entity.Board;
 import com.code.review.domain.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,26 +29,34 @@ public class BoardService {
                 boardRequestDto.getTitle(),
                 boardRequestDto.getContent());
         Board save = boardRepository.save(board);
-        return BoardResponseDto.form(save.getId(), save.getTitle(), save.getContent());
+        return BoardResponseDto.form(save.getId(), save.getTitle(), save.getContent(),save.getCreatedAt(),save.getModifiedAt());
     }
 
 
     // 게시물 단건 조회
     public BoardResponseDto getBoard(Long boardId) {
         Board post = findPost(boardId);
-        return BoardResponseDto.form(post.getId(), post.getTitle(), post.getContent());
+        return BoardResponseDto.form(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getModifiedAt());
     }
 
     // 게시물 다건 조회
-    public List<BoardResponseDto> findAllBoard() {
-        List<Board> boardList = boardRepository.findAll();
+    public List<BoardResponseDto> findAllBoard(int page, int size) {
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
+        Page<Board> boardList = boardRepository.findAll(pageable);
         List<BoardResponseDto> boardResponseDto =
                 boardList.stream().map(board -> BoardResponseDto.form(
                                 board.getId(),
                                 board.getContent(),
-                                board.getTitle()))
-                        .collect(Collectors.toList());
-        return boardResponseDto;
+                                board.getTitle(),
+                                board.getCreatedAt(),
+                                board.getModifiedAt()))
+                                .collect(Collectors.toList());
+        return  boardResponseDto;
     }
 
     // 게시물 수정
@@ -52,7 +64,12 @@ public class BoardService {
     public BoardResponseDto modifyBoard(Long boardId, BoardModifiedRequestDto boardModifiedRequestDto) {
         Board post = findPost(boardId);
         post.boardModified(boardModifiedRequestDto.getTitle(), boardModifiedRequestDto.getContent());
-        return BoardResponseDto.form(post.getId(), post.getTitle(), post.getContent());
+        return BoardResponseDto.form(
+                post.getId(),
+                post.getTitle(),
+                post.getContent(),
+                post.getCreatedAt(),
+                post.getModifiedAt());
     }
 
     // 게시물 삭제
@@ -66,4 +83,5 @@ public class BoardService {
         return boardRepository.findById(id).orElseThrow(() ->
                 new NullPointerException(id + "를 가진 게시물이 없습니다."));
     }
+
 }

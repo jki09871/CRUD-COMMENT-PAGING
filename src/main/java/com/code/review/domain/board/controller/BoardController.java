@@ -6,6 +6,7 @@ import com.code.review.domain.board.dto.BoardResponseDto;
 import com.code.review.domain.board.service.BoardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,8 +31,9 @@ public class BoardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BoardResponseDto>> findAllBoard() {
-        return ResponseEntity.status(HttpStatus.OK).body(boardService.findAllBoard());
+    public ResponseEntity<List<BoardResponseDto>> findAllBoard(@RequestParam(defaultValue = "1", required = false) int page,
+                                                               @RequestParam(defaultValue = "10", required = false) int size) {
+        return ResponseEntity.status(HttpStatus.OK).body(boardService.findAllBoard(page, size));
     }
 
     @PutMapping("/{boardId}")
