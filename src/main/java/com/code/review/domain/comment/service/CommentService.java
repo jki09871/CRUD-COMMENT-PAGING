@@ -28,20 +28,15 @@ public class CommentService {
     public CommentResponseDto createComment(Long boardId, CommentRequestDto commentRequestDto) {
         Board post = findPost(boardId);
         Comment save = commentRepository.save(Comment.of(commentRequestDto.getComment(), post));
-        return CommentResponseDto.from(save);
+        return CommentResponseDto.of(save);
     }
 
     //댓글 전체 조회
     public List<CommentResponseDto> findByIdComment(Long boardId) {
         findPost(boardId);
         List<Comment> comments = commentRepository.findAllByBoard_Id(boardId);
-        List<CommentResponseDto> commentResponseDtoList =
-                comments.stream()
-                .filter(comment -> comment.getDeletedAt() == null). // deletedAt이 null이 아닌 경우만 필터링
-                map(CommentResponseDto::from).
-                collect(Collectors.toList());
 
-        return commentResponseDtoList;
+        return comments.stream().map(CommentResponseDto::of).collect(Collectors.toList());
     }
 
     @Transactional // 댓글 수정
@@ -52,7 +47,7 @@ public class CommentService {
                 );
         findComment.commentModified(modifiedRequest.getComment());
 
-        return CommentResponseDto.from(findComment);
+        return CommentResponseDto.of(findComment);
     }
 
     @Transactional // 댓글 삭제
@@ -60,8 +55,7 @@ public class CommentService {
         findPost(boardId);
 
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new NullPointerException(commentId + "번을 가진 댓글을 찾을 수 없습니다.")
-        );
+                new NullPointerException(commentId + "번을 가진 댓글을 찾을 수 없습니다."));
         comment.deleteComment(LocalDateTime.now());
 
         return "댓글 삭제 성공";

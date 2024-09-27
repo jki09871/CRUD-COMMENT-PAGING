@@ -31,7 +31,7 @@ public class BoardController {
     }
 
     @GetMapping// 게시물 전체 조회
-    public ResponseEntity<List<BoardResponseDto>> findAllBoard(@RequestParam(defaultValue = "1", required = false) int page,
+    public ResponseEntity<Page<BoardResponseDto>> findAllBoard(@RequestParam(defaultValue = "1", required = false) int page,
                                                                @RequestParam(defaultValue = "10", required = false) int size) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findAllBoard(page, size));
     }
