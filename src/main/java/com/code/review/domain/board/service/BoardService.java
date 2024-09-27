@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +48,7 @@ public class BoardService {
     // 게시물 다건 조회
     public List<BoardResponseDto> findAllBoard(int page, int size) {
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
-        Page<Board> boardList = boardRepository.findAll(pageable);
+        Page<Board> boardList = boardRepository.findAllByDeletedAtIsNull(pageable);
         List<BoardResponseDto> boardResponseDto =
                 boardList.stream().map(board -> BoardResponseDto.form(
                                 board.getId(),
@@ -72,16 +73,19 @@ public class BoardService {
                 post.getModifiedAt());
     }
 
-    // 게시물 삭제
+
+    @Transactional    // 게시물 삭제
     public String deleteBoard(Long boardId) {
-        boardRepository.deleteById(findPost(boardId).getId());
+        Board post = findPost(boardId);
+        post.boardDeletedAt(LocalDateTime.now());
         return boardId + "번을 가진 게시물을 삭제 했습니다.";
     }
 
     // 게시물 찾기
     public Board findPost(Long id) {
-        return boardRepository.findById(id).orElseThrow(() ->
-                new NullPointerException(id + "를 가진 게시물이 없습니다."));
+        return boardRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() ->
+                    new NullPointerException("해당 댓글이 없습니다.")
+                );
     }
 
 }

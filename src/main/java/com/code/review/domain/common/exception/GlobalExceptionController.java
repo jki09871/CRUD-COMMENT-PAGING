@@ -1,4 +1,4 @@
-package com.code.review.domain.board.controller.exception;
+package com.code.review.domain.common.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

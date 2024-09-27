@@ -20,29 +20,29 @@ public class BoardController {
 
     private final BoardService boardService;
 
-    @PostMapping
+    @PostMapping // 게시물 작성
     public ResponseEntity<BoardResponseDto> createBoard(@Valid @RequestBody BoardRequestDto boardRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.createBoard(boardRequestDto));
     }
 
-    @GetMapping("/{boardId}")
-    public ResponseEntity<BoardResponseDto> getFindById(@PathVariable Long boardId) {
+    @GetMapping("/{boardId}") // 게시물 단건 조회
+    public ResponseEntity<BoardResponseDto> readBoard(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.getBoard(boardId));
     }
 
-    @GetMapping
+    @GetMapping// 게시물 전체 조회
     public ResponseEntity<List<BoardResponseDto>> findAllBoard(@RequestParam(defaultValue = "1", required = false) int page,
                                                                @RequestParam(defaultValue = "10", required = false) int size) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.findAllBoard(page, size));
     }
 
-    @PutMapping("/{boardId}")
+    @PutMapping("/{boardId}") // 게시물 수정
     public ResponseEntity<BoardResponseDto> modifyBoard(@PathVariable Long boardId,
                                                         @Valid @RequestBody BoardModifiedRequestDto boardModifiedRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.modifyBoard(boardId, boardModifiedRequestDto));
     }
 
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/{boardId}") // 게시물 삭제
     public ResponseEntity<String> deleteBoard(@PathVariable Long boardId) {
         return ResponseEntity.status(HttpStatus.OK).body(boardService.deleteBoard(boardId));
     }
