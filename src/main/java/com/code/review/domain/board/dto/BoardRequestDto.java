@@ -2,10 +2,11 @@ package com.code.review.domain.board.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
+@Builder
 public class BoardRequestDto {
 
     @NotBlank(message = "제목을 작성해 주세요.")

@@ -32,7 +32,6 @@ public class BoardService {
                 boardRequestDto.getTitle(),
                 boardRequestDto.getContent());
         Board save = boardRepository.save(board);
-        List<Comment> allByBoard_id = commentRepository.findAllByBoard_Id(save.getId());
 
         return BoardResponseDto.of(save);
     }
@@ -71,7 +70,7 @@ public class BoardService {
     // 게시물 찾기
     public Board findPost(Long id) {
         return boardRepository.findByIdAndDeletedAtIsNull(id).orElseThrow(() ->
-                    new NullPointerException("해당 댓글이 없습니다.")
+                    new NullPointerException("해당 게시물을 찾을 수 없습니다.")
                 );
     }
 

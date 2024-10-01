@@ -19,7 +19,7 @@ public class CommentController {
 
     private final CommentService commentService;
 
-    @PostMapping("/comment/{boardId}") // 댓글 작성
+    @PostMapping("/{boardId}/comment") // 댓글 작성
     public ResponseEntity<CommentResponseDto> createComment(@PathVariable Long boardId, @Valid @RequestBody CommentRequestDto commentRequestDto) {
         return ResponseEntity.status(HttpStatus.OK).body(commentService.createComment(boardId, commentRequestDto));
     }

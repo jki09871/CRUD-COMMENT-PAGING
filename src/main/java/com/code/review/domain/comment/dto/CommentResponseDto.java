@@ -1,6 +1,8 @@
 package com.code.review.domain.comment.dto;
 
 import com.code.review.domain.entity.Comment;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 

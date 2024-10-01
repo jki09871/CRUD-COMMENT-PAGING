@@ -20,4 +20,11 @@ public class GlobalExceptionController {
         });
         return new ResponseEntity<>(errorMessage.toString(), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<String> nullPointerException(NullPointerException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(HttpStatus.NOT_FOUND + " : " + ex.getMessage());
+    }
 }
